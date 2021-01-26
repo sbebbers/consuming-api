@@ -18,7 +18,7 @@ abstract class RequestHandler
      *
      * @var mixed
      */
-    protected $_config;
+    protected $config;
 
     /**
      * <p>URL for the API end point</p>
@@ -59,12 +59,12 @@ abstract class RequestHandler
      * @return void
      * @uses <p>Add or over-ride options in the following example:</p>
      *       <pre>$curlOptions = [</pre>
-     *       <pre> CURLOPT_RETURNTRANSFER = 0,</pre>
-     *       <pre> CURLOPT_FAILONERROR = 1</pre>
+     *       <pre> CURLOPT_RETURNTRANSFER => 0,</pre>
+     *       <pre> CURLOPT_FAILONERROR => 1</pre>
      *       <pre>];</pre>
      *       <pre>RegentOceania\APIHelper::setCURLOptions($curlOptions);</pre>
      */
-    private function setCURLOptions($options = [])
+    private function setCURLOptions($options = []): void
     {
         if (! ($urlEndPoint = $this->apiEndPoint)) {
             throw new ConsumingAPIException('No defined end point found in ' . __METHOD__ . '()');
