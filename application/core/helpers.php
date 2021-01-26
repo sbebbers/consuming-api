@@ -1,5 +1,5 @@
 <?php
-if (!defined('APPLICATION') || APPLICATION !== 0xc0ffee) {
+if (! defined('APPLICATION') || APPLICATION !== 0xc0ffee) {
     die('<pre>Access denied</pre>');
 }
 
@@ -18,13 +18,13 @@ function getFullFilePath(string $filePath = null, string $fileName = null): stri
     if (empty($filePath)) {
         $filePath = '/application/';
     }
-    
+
     if ($filePath[0] !== '/') {
         $filePath = "/{$filePath}";
     }
-    
+
     $filePath = str_replace('\\', '/', dirname(__DIR__) . $filePath . $fileName);
-    
+
     return str_replace('//', '/', $filePath);
 }
 
@@ -75,27 +75,27 @@ function writeToErrorLog($error, int $jsonConstant = NULL): bool
     $error = is_array($error) ? $error : [
         'errorDetails' => $error
     ];
-    
+
     if (empty($error['date'])) {
         $error['date'] = date('Y-m-d');
         $error['time'] = date('H:i:s');
     }
-    
+
     $fileNames = explode("-", $error['date']);
     $logPath = getFullFilePath('/application/logs/' . getMonths()[(int) $fileNames[1]] . '/');
     $fileName = str_replace('//', '/', "{$logPath}/{$fileNames[2]}");
     $fileName .= '.log';
-    
+
     if (! is_dir($logPath)) {
         mkdir($logPath, DIRECTORY_PERMISSIONS, TRUE);
     }
-    
+
     if (! file_exists($fileName)) {
         file_put_contents($fileName, '');
         chmod($fileName, FILE_PERMISSIONS);
     }
-    
+
     $error = json_encode($error, $jsonConstant);
-    
+
     return (bool) file_put_contents($fileName, $error . PHP_EOL, FILE_APPEND | LOCK_EX);
 }
