@@ -44,7 +44,7 @@ abstract class RequestHandler
         $this->cURL = curl_init();
 
         if (FALSE === $this->cURL) {
-            throw new ConsumingAPIException('cURL object failed in constructor');
+            throw new ConsumingAPIException('cURL resource failed in ' . __CLASS__, ConsumingAPIException::CURL_FAILURE);
         }
     }
 
