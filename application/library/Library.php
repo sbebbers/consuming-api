@@ -53,7 +53,7 @@ class Library
         }
 
         if (! empty($error)) {
-            if($visualOutput){
+            if ($visualOutput) {
                 echo '<p style="color:red">Exception caught: ' . $error . '; Error code: ' . $errorCode . '</p>';
             } else {
                 writeToErrorLog($error);
