@@ -1,6 +1,10 @@
 <?php
 if (! defined('APPLICATION') || APPLICATION !== 0xc0ffee) {
-    die('<pre>Access denied</pre>');
+    $error = [
+        'message' => 'Access denied'
+    ];
+
+    require_once (getApplicationPath(NULL, '/view/error-response.php'));
 }
 
 require_once (getApplicationPath(NULL, '/core/ConsumingAPIException.php'));
@@ -110,11 +114,11 @@ function writeToErrorLog($error, int $jsonConstant = NULL): bool
     $logPath = '/logs/' . getMonths()[$fileNames[1]];
     $fileName = getApplicationPath(NULL, "{$logPath}/{$fileNames[2]}.log");
 
-    while (! is_dir(getApplicationPath(NULL, $logPath))) {
+    if (! is_dir(getApplicationPath(NULL, $logPath))) {
         mkdir(getApplicationPath(NULL, $logPath), DIRECTORY_PERMISSIONS, TRUE);
     }
 
-    while (! file_exists($fileName)) {
+    if (! file_exists($fileName)) {
         file_put_contents($fileName, '');
         chmod($fileName, FILE_PERMISSIONS);
     }
