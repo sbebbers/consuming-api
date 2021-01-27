@@ -34,7 +34,7 @@ class Library
      */
     public function unitTest(object &$object, string $method, $params, $expectedResult, bool $visualOutput): bool
     {
-        $error = $errorCode = null;
+        $error = $errorCode = NULL;
 
         if (is_array($params)) {
             try {

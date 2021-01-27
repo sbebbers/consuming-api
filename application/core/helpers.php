@@ -74,8 +74,8 @@ function getMonths(): array
 /**
  * <p>Writes a log file based on date
  * and day; if log file already exists
- * then it will append the data to the
- * file.</p>
+ * then it will append the error report
+ * to the file.</p>
  *
  * <p>You may also send a JSON costant
  * such as JSON_PRETTY_PRINT as the second
@@ -90,13 +90,12 @@ function writeToErrorLog($error, int $jsonConstant = NULL): bool
 {
     if (empty($error)) {
         $debug = array_merge([
-            __FUNCTION__ . '() called with empty $error parameter'], 
-            debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT)
-        );
+            __FUNCTION__ . '() called with empty $error parameter'
+        ], debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT));
 
         return writeToErrorLog($debug, $jsonConstant);
     }
-    
+
     $error = is_array($error) ? $error : [
         'errorDetails' => $error
     ];
@@ -105,7 +104,7 @@ function writeToErrorLog($error, int $jsonConstant = NULL): bool
         $error['date'] = date('Y-m-d');
         $error['time'] = date('H:i:s');
     }
-    
+
     $fileNames = explode("-", $error['date']);
 
     $logPath = '/logs/' . getMonths()[$fileNames[1]];

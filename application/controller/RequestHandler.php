@@ -3,7 +3,7 @@ namespace ShaunB\Appplcation\Controller;
 
 use ShaunB\Applcation\Core\ConsumingAPIException;
 
-abstract class RequestHandler
+class RequestHandler
 {
 
     /**
@@ -121,7 +121,7 @@ abstract class RequestHandler
      * @throws ConsumingAPIException
      * @return string
      */
-    public function apiCall(array $postData = null): ?string
+    public function apiCall(array $postData = NULL): ?string
     {
         try {
             $this->setCURLOptions([

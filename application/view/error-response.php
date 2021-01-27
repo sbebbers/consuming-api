@@ -3,7 +3,7 @@ if (empty($error)) {
     $error = [];
 }
 if (empty($result)) {
-    $result = null;
+    $result = NULL;
 }
 $message = [
     '400' => 'Bad request',
@@ -31,7 +31,7 @@ writeToLogFile($error);
 $serverStatus = $error['serverStatus'];
 $error = json_encode($error, JSON_PRETTY_PRINT);
 
-header('Content-Type:application/json;charset=utf-8' . PHP_EOL, null, $serverStatus);
+header('Content-Type:application/json;charset=utf-8' . PHP_EOL, NULL, $serverStatus);
 header('HTTP/1.1 ' . $message[$serverStatus] . PHP_EOL);
 header('Content-Length:' . strlen($error));
 
