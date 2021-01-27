@@ -89,8 +89,14 @@ function getMonths(): array
 function writeToErrorLog($error, int $jsonConstant = NULL): bool
 {
     if (empty($error)) {
-        return FALSE;
+        $debug = array_merge([
+            __FUNCTION__ . '() called with empty $error parameter'], 
+            debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT)
+        );
+
+        return writeToErrorLog($debug, $jsonConstant);
     }
+    
     $error = is_array($error) ? $error : [
         'errorDetails' => $error
     ];
@@ -99,22 +105,20 @@ function writeToErrorLog($error, int $jsonConstant = NULL): bool
         $error['date'] = date('Y-m-d');
         $error['time'] = date('H:i:s');
     }
-
+    
     $fileNames = explode("-", $error['date']);
 
     $logPath = '/logs/' . getMonths()[$fileNames[1]];
     $fileName = getApplicationPath(NULL, "{$logPath}/{$fileNames[2]}.log");
 
-    if (! is_dir(getApplicationPath(NULL, $logPath))) {
+    while (! is_dir(getApplicationPath(NULL, $logPath))) {
         mkdir(getApplicationPath(NULL, $logPath), DIRECTORY_PERMISSIONS, TRUE);
     }
 
-    if (! file_exists($fileName)) {
+    while (! file_exists($fileName)) {
         file_put_contents($fileName, '');
         chmod($fileName, FILE_PERMISSIONS);
     }
 
-    $error = json_encode($error, $jsonConstant);
-
-    return (bool) file_put_contents($fileName, $error . PHP_EOL, FILE_APPEND | LOCK_EX);
+    return (bool) file_put_contents($fileName, json_encode($error, $jsonConstant) . PHP_EOL, FILE_APPEND | LOCK_EX);
 }
