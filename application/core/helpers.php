@@ -3,6 +3,10 @@ if (! defined('APPLICATION') || APPLICATION !== 0xc0ffee) {
     die('<pre>Access denied</pre>');
 }
 
+require_once (getApplicationPath(NULL, '/core/ConsumingAPIException.php'));
+require_once (getApplicationPath(NULL, '/controller/RequestHandler.php'));
+require_once (getApplicationPath(NULL, '/Library/Library.php'));
+
 define('FILE_PERMISSIONS', 0644);
 define('DIRECTORY_PERMISSIONS', 0755);
 
@@ -13,7 +17,7 @@ define('DIRECTORY_PERMISSIONS', 0755);
  * @param string $fileName
  * @return string
  */
-function getFullFilePath(string $filePath = null, string $fileName = null): string
+function getApplicationPath(string $filePath = NULL, string $fileName = NULL): string
 {
     if (empty($filePath)) {
         $filePath = '/application/';
@@ -23,9 +27,24 @@ function getFullFilePath(string $filePath = null, string $fileName = null): stri
         $filePath = "/{$filePath}";
     }
 
-    $filePath = str_replace('\\', '/', dirname(__DIR__) . $filePath . $fileName);
+    $filePath = str_replace('\\', '/', dirname(dirname(__DIR__)) . $filePath . $fileName);
 
     return str_replace('//', '/', $filePath);
+}
+
+/**
+ * <p>Quick debug function</p>
+ *
+ * @param mixed $value
+ * @param bool $die
+ */
+function debug($value, bool $die = FALSE): void
+{
+    echo '<pre>' . print_r($value, TRUE) . '</pre>';
+
+    if ($die) {
+        exit();
+    }
 }
 
 /**
@@ -37,18 +56,18 @@ function getFullFilePath(string $filePath = null, string $fileName = null): stri
 function getMonths(): array
 {
     return [
-        1 => 'jan',
-        'feb',
-        'mar',
-        'apr',
-        'may',
-        'jun',
-        'jul',
-        'aug',
-        'sep',
-        'oct',
-        'nov',
-        'dec'
+        '01' => 'jan',
+        '02' => 'feb',
+        '03' => 'mar',
+        '04' => 'apr',
+        '05' => 'may',
+        '06' => 'jun',
+        '07' => 'jul',
+        '08' => 'aug',
+        '09' => 'sep',
+        '10' => 'oct',
+        '11' => 'nov',
+        '12' => 'dec'
     ];
 }
 
@@ -82,12 +101,12 @@ function writeToErrorLog($error, int $jsonConstant = NULL): bool
     }
 
     $fileNames = explode("-", $error['date']);
-    $logPath = getFullFilePath('/application/logs/' . getMonths()[(int) $fileNames[1]] . '/');
-    $fileName = str_replace('//', '/', "{$logPath}/{$fileNames[2]}");
-    $fileName .= '.log';
 
-    if (! is_dir($logPath)) {
-        mkdir($logPath, DIRECTORY_PERMISSIONS, TRUE);
+    $logPath = '/logs/' . getMonths()[$fileNames[1]];
+    $fileName = getApplicationPath(NULL, "{$logPath}/{$fileNames[2]}.log");
+
+    if (! is_dir(getApplicationPath(NULL, $logPath))) {
+        mkdir(getApplicationPath(NULL, $logPath), DIRECTORY_PERMISSIONS, TRUE);
     }
 
     if (! file_exists($fileName)) {
