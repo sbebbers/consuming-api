@@ -3,7 +3,7 @@ namespace ShaunB\Appplcation\Controller;
 
 use ShaunB\Applcation\Core\ConsumingAPIException;
 
-class RequestHandler
+abstract class RequestHandler
 {
 
     /**
@@ -30,7 +30,7 @@ class RequestHandler
     /**
      * <p>For any HTTP headers that need setting</p>
      *
-     * @var string $header
+     * @var array $header
      */
     protected $header;
 
@@ -115,18 +115,19 @@ class RequestHandler
     }
 
     /**
-     * <p>Make the api call with XML payload</p>
+     * <p>Make the api call</p>
      *
      * @param string $postData
      * @throws ConsumingAPIException
      * @return string
      */
-    public function apiCall(array $postData = NULL): ?string
+    public function apiCall(array $postData): ?string
     {
         try {
             $this->setCURLOptions([
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_HTTPHEADER => $this->header
+                CURLOPT_HTTPHEADER => $this->getHeader(),
+                CURLOPT_POST => json_encode($postData)
             ]);
 
             return $this->executeCURLRequest();
@@ -160,6 +161,21 @@ class RequestHandler
         $this->header = $htmlHeader;
 
         return $this;
+    }
+    
+    /**
+     * <p>Returns the HTML header</p>
+     *
+     * @throws ConsumingAPIException
+     * @return array|NULL
+     */
+    public function getHeader():?array
+    {
+        if(empty($this->header)){
+            throw new ConsumingAPIException('Missing header parameter', ConsumingAPIException::MISSING_PARAMETER);
+        }
+        
+        return $this->header;
     }
 
     /**

@@ -9,6 +9,7 @@ if (! defined('APPLICATION') || APPLICATION !== 0xc0ffee) {
 
 require_once (getApplicationPath(NULL, '/core/ConsumingAPIException.php'));
 require_once (getApplicationPath(NULL, '/controller/RequestHandler.php'));
+require_once (getApplicationPath(NULL, '/controller/Register.php'));
 require_once (getApplicationPath(NULL, '/Library/Library.php'));
 
 define('FILE_PERMISSIONS', 0644);
